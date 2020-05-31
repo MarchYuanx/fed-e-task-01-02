@@ -1,5 +1,6 @@
 const fp = require('lodash/fp')
 
+// 代码题1
 // 数据
 // horsepower 马力，dollar_value 价格，in_stock 库存
 const cars = [
@@ -85,6 +86,3 @@ let _underscore = fp.replace(/\W+/g, '_')
 
 
 let sanitizeName = fp.flowRight(_underscore, fp.toLower)
-
-
-console.log(sanitizeNames(cars))

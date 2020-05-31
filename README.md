@@ -31,7 +31,7 @@
 
 # 代码题1
 
-## 基于以下代码完成下面四个练习
+基于以下代码完成下面四个练习
 
 ```
 const fp = require('lodash/fp')
@@ -78,7 +78,7 @@ const cars = [
 ]
 ```
 
-### 练习1
+## 练习1
 使用函数组合 fp.flowRight() 重载实现下面这个函数
 ```
 let isLastInStock = function (cars) {
@@ -96,7 +96,7 @@ let isLastInStock = function(cars){
 }
 ```
 
-### 练习2
+## 练习2
 使用fp.flowRight()、fp.prop()和fp.first()获取第一个car的name
 
 实现如下
@@ -107,7 +107,7 @@ let firstName = function(cars){
 }
 ```
 
-### 练习3
+## 练习3
 使用帮助函数_average重构averageDollarValue，使用函数组合的方式实现
 
 ```
@@ -130,10 +130,9 @@ let averageDollarValue2 = function (cars) {
   const fn = fp.flowRight(_average, fp.map(fp.prop('dollar_value')))
   return fn(cars)
 }
-
 ```
 
-### 练习4
+## 练习4
 使用flowRight写一个sanitizeNames()函数，返回一个下划线连接的小写字符串，把数组中的name转换为这种形式，例如：sanitizeNames(['Hello World'])=>['hello_world']
 
 ```
@@ -144,4 +143,109 @@ let _underscore = fp.replace(/\W+/g, '_')
 实现如下
 ```
 let sanitizeNames = fp.flowRight(_underscore,fp.toLower)
+```
+
+# 代码题2
+基于下面提供的代码，完成后续的四个练习
+```
+// support.js
+class Container {
+  static of(value) {
+    return new Container(value)
+  }
+  constructor(value) {
+    this._value = value
+  }
+  map(fn) {
+    return Container.of(fn(this._value))
+  }
+}
+
+class Maybe {
+  static of(x) {
+    return new Maybe(x)
+  }
+  isNothing() {
+    return this._value === null || this._value === undefined
+  }
+  constructor(x) {
+    this._value = x
+  }
+  map(fn) {
+    return this.isNothing() ? this : Maybe.of(fn(this._value))
+  }
+}
+
+module.exports = {
+  Maybe,
+  Container
+}
+```
+
+## 练习1
+使用fp.add(x,y)和fp.map(f,x)创建一个能让functor里的值（数组元素中的数值+1）增加的函数ex1
+```
+const fp = require('lodash/fp')
+const { Maybe, Container } = require('./support')
+
+let maybe = Maybe.of([5, 6, 1])
+let ex1 = // ...你需要实现的位置
+```
+实现如下
+```
+let ex1 = function(){
+    return functor.map(functor.map(fp.add(1)))
+}
+```
+
+## 练习2
+实现一个函数ex2，能够使用fp.first获取列表的第一个元素
+```
+const fp = require('lodash/fp')
+const { Maybe, Container } = require('./support')
+
+let xs = Container.of(['do', 'ray', 'me', 'fa', 'so', 'la', 'ti', 'do'])
+let ex2 = // ...你需要实现的位置
+```
+实现如下
+```
+let ex2 = function(functor){
+    return functor.map(fp.first)._value
+}
+```
+
+## 练习3
+实现一个函数ex3，使用safeProph和fp.first找到user的名字的首字母
+```
+const fp = require('lodash/fp')
+const { Maybe, Container } = require('./support')
+
+let safeProp = fp.curry(function (x, o) { return Maybe.of(o[x]) })
+let user = { id: 2, name: 'Albert' }
+let ex3 = // ...你需要实现的位置
+```
+实现如下
+```
+let ex3 = function (user) {
+  return safeProp("name", user).map(fp.first)._value
+}
+```
+## 练习4
+使用Maybe重写ex4，不要有if语句
+```
+const fp = require('lodash/fp')
+const { Maybe, Container } = require('./support')
+
+let ex4 = function (n) {
+  if (n) {
+    return parseInt(n)
+  }
+}
+```
+
+实现如下
+```
+let ex4 = function(n){
+    return Maybe.of(n).map(parseInt)._value
+}
 ```
